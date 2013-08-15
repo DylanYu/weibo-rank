@@ -4,10 +4,6 @@
  */
 package weiborank;
 
-/**
- *
- * @author Qian Yu
- */
 public class WeiboRankDriver {
     
     public static void main(String[] args) throws Exception {

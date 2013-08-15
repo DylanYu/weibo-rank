@@ -18,10 +18,6 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-/**
- *
- * @author Qian Yu
- */
 public class WeiboRankViewer extends Configured implements Tool {
     
     public static class Map extends Mapper<LongWritable, Text, DoubleWritable, Text> {

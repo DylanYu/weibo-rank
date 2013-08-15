@@ -37,7 +37,7 @@ public class WeiboRanklter extends Configured implements Tool {
                 double rankValue = Double.parseDouble(subContent[0]);
                 String[] link = subContent[1].split(",");
                 for(int i = 0; i < link.length; i++) {
-                    String tmp = ":" + Double.toString(rankValue/link.length);
+                    String tmp = ":" + Double.toString(rankValue / link.length);
                     context.write(new Text(link[i]), new Text(tmp));
                 }
                 context.write(new Text(url), new Text(subContent[1]));
@@ -49,6 +49,7 @@ public class WeiboRanklter extends Configured implements Tool {
     public static class Reduce extends Reducer<Text, Text, Text, Text> {
         
         private static final double d = 0.85;
+        private static final double minRank = (1 - d) / 1000000;
         
         public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
             String value = "";
@@ -65,7 +66,7 @@ public class WeiboRanklter extends Configured implements Tool {
                     list = value;
                 }
             }
-            rank = (1 - d) + d * rank;
+            rank = minRank + d * rank;
             String content = Double.toString(rank) + "%" + list;
             context.write(key, new Text(content));
         }
