@@ -75,7 +75,7 @@ public class FansRank extends Configured implements Tool {
 				}
 			}
 			catch (NumberFormatException ex) {
-				// Can't parse UserID, so it's the header, just skip.
+				// Unable to parse UserID, so it's the header, just skip.
 				;
 			}
 			

@@ -52,7 +52,7 @@ public class GraphBuilder extends Configured implements Tool {
 					context.write(outputKey, outputValye);
 				}
 				catch (NumberFormatException ex) {
-					// Can't parse UserID, so it's the header, just skip.
+					// Unable to parse UserID, so it's the header, just skip.
 					;
 				}
 			}
