@@ -19,9 +19,9 @@ import java.util.Collections;
 public class MergeTrainingData {
 	@SuppressWarnings("unchecked")
 	public static void merge() throws IOException {
-		FileInputStream inStream0 = new FileInputStream("/home/helo/Workspace/Hadoop/Data - KNN Data Set/0-500");
-		FileInputStream inStream1 = new FileInputStream("/home/helo/Workspace/Hadoop/Data - KNN Data Set/501-1000");
-		FileInputStream inStream2 = new FileInputStream("/home/helo/Workspace/Hadoop/Data - KNN Data Set/1001-1500");
+		FileInputStream inStream0 = new FileInputStream("Data - KNN Data Set/0-500");
+		FileInputStream inStream1 = new FileInputStream("Data - KNN Data Set/501-1000");
+		FileInputStream inStream2 = new FileInputStream("Data - KNN Data Set/1001-1500");
 		BufferedReader br0 = new BufferedReader(new InputStreamReader(inStream0, "utf-8"));
 		BufferedReader br1 = new BufferedReader(new InputStreamReader(inStream1, "utf-8"));
 		BufferedReader br2 = new BufferedReader(new InputStreamReader(inStream2, "utf-8"));
@@ -30,26 +30,30 @@ public class MergeTrainingData {
 		int count = 0;
 		while (count < 500) {
 			String line0 = br0.readLine();
-			String line1 = br1.readLine();
+//			String line1 = br1.readLine();
 			String line2 = br2.readLine();
 			store.add(line0);
-			store.add(line1);
+//			store.add(line1);
 			store.add(line2);
 			count++;
 		}
 		br0.close();
-		br1.close();
+//		br1.close();
 		br2.close();
 		shuffled = (ArrayList<String>) store.clone();
 		Collections.shuffle(shuffled);
+		Collections.shuffle(shuffled);
+		Collections.shuffle(shuffled);
+		Collections.shuffle(shuffled);
+		Collections.shuffle(shuffled);
 		
-		FileOutputStream outStream0 = new FileOutputStream("/home/helo/Workspace/Hadoop/Data - KNN Data Set/trainingSet");
+		FileOutputStream outStream0 = new FileOutputStream("Data - KNN Data Set/rawTrainingSet");
 		BufferedWriter bw0 = new BufferedWriter(new OutputStreamWriter(outStream0, "utf-8"));
-		FileOutputStream outStream1 = new FileOutputStream("/home/helo/Workspace/Hadoop/Data - KNN Data Set/testSet");
+		FileOutputStream outStream1 = new FileOutputStream("Data - KNN Data Set/rawTestSet");
 		BufferedWriter bw1 = new BufferedWriter(new OutputStreamWriter(outStream1, "utf-8"));
 		count = 0;
-		while (count < 1500) {
-			if (count < 1000)
+		while (count < 1000) {
+			if (count < 700)
 				bw0.write(shuffled.get(count) + "\n");
 			else {
 				bw1.write(shuffled.get(count) + "\n");

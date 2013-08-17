@@ -17,8 +17,8 @@ import com.csvreader.CsvReader;
  */
 public class VerifyTraningData {
 	public static void vertify() throws IOException {
-		FileInputStream inStream = new FileInputStream("/home/helo/Workspace/Hadoop/Data - KNN Data Set/trainingSet");
-//		FileInputStream inStream = new FileInputStream("/home/helo/Workspace/Hadoop/Data - KNN Data Set/testSet");
+		FileInputStream inStream = new FileInputStream("Data - KNN Data Set/rawTrainingSet");
+//		FileInputStream inStream = new FileInputStream("Data - KNN Data Set/rawTestSet");
 		CsvReader csvReader = new CsvReader(inStream, Charset.forName("utf-8"));
 //		csvReader.readHeaders();
 		String line = null;
@@ -31,7 +31,7 @@ public class VerifyTraningData {
 				count1++;
 			count++;
 		}
-		System.out.println(count1 + "/" + count);
+		System.out.println(count1 + "/" + count + ":" + (double)count1 / count);
 	}
 	
 	public static void main(String[] args) throws IOException {

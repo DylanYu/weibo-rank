@@ -1,9 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package weiborank;
 
+/**
+ * Driver for PageRank algorithm
+ * 
+ * @author Dongliang Yu
+ *
+ */
 public class WeiboRankDriver {
     
     public static void main(String[] args) throws Exception {

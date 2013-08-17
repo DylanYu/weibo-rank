@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package weiborank;
+package filter;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,11 +25,11 @@ import org.apache.hadoop.util.ToolRunner;
 
 import com.csvreader.CsvReader;
 
-public class GraphBuilder extends Configured implements Tool {
+public class MergeFiles extends Configured implements Tool {
 
 	public static class Map extends Mapper<LongWritable, Text, Text, Text> {
 
-		private Text outputKey = new Text();
+		private Text outputKey = new Text("");
 		private Text outputValye = new Text();
 
 		@Override
@@ -40,22 +40,14 @@ public class GraphBuilder extends Configured implements Tool {
 			reader.readRecord();
 			String user = reader.get(0);
 			String watchList = reader.get(20);
-			String category = reader.get(24);
+
 			try {
+				Integer.parseInt(user);
 				if (watchList.equals("")) {
 					// Has no watch list, just skip
 					;
-				} 
-				else if (category.equals("0")) {
-					// Inactive user, just skip
-					;
-				}
-				else {
-					Integer.parseInt(user);
-					outputKey.set(user);
-					String rankAndWatchList = "1%" + watchList;
-					outputValye.set(rankAndWatchList);
-					context.write(outputKey, outputValye);
+				} else {
+					context.write(outputKey, value);
 				}
 			} catch (NumberFormatException ex) {
 				// Unable to parse UserID, so it's the header, just skip.
@@ -68,8 +60,8 @@ public class GraphBuilder extends Configured implements Tool {
 	public int run(String[] args) throws Exception {
 		Configuration conf = new Configuration();
 		FileSystem.get(conf).delete(new Path(args[1]), true);
-		Job job = new Job(conf, "GraphBuilder");
-		job.setJarByClass(GraphBuilder.class);
+		Job job = new Job(conf, "MergeFiles");
+		job.setJarByClass(MergeFiles.class);
 		job.setMapperClass(Map.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
@@ -79,6 +71,6 @@ public class GraphBuilder extends Configured implements Tool {
 	}
 
 	public static void main(String[] args) throws Exception {
-		int ret = ToolRunner.run(new GraphBuilder(), args);
+		int ret = ToolRunner.run(new MergeFiles(), args);
 	}
 }
