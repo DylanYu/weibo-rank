@@ -17,57 +17,51 @@ import java.util.HashMap;
  *
  */
 public class RankAnalysis {
-	private static final double FANS_NUMBER = 4165343.0;
-	private static final double INFU_NUMBER = 4359058.0;
-	private static final int COFF = 100000;
+	private static final double FANS_NUMBER = 5634827.0;
+	private static final double RANK_NUMBER = 4975687.0;
 	
-	public static void analysis() throws IOException {
-//		HashMap<Long, Double> fansMap = new HashMap<Long, Double>(4500000);
-		HashMap<Long, Long> fansMap = new HashMap<Long, Long>(4500000);
+	public static void analysis(String fansCountFile, String WeiboRankFile, String outputFile) throws IOException {
+		HashMap<Long, Long> fansMap = new HashMap<Long, Long>(6000000);
 //		HashMap<Integer, Double> rankMap = new HashMap<Integer, Double>(4500000);
-		String fansFile = "C:/workspace/weiborank/Fans_rank";
-		String infuFile = "C:/workspace/weiborank/Weibo_rank";
-		FileInputStream inFans = new FileInputStream(fansFile);
-		FileInputStream inRank = new FileInputStream(infuFile);
+		FileInputStream inFans = new FileInputStream(fansCountFile);
+		FileInputStream inRank = new FileInputStream(WeiboRankFile);
 		BufferedReader brFans = new BufferedReader(new InputStreamReader(inFans));
-		BufferedReader brInfu = new BufferedReader(new InputStreamReader(inRank));
+		BufferedReader brRank = new BufferedReader(new InputStreamReader(inRank));
 		
 		String line = "";
-		int fansRank = 1;
+		long fansCount = 1;
 		while ((line = brFans.readLine()) != null) {
-			System.out.println("fans:" + fansRank);
+			System.out.println("fans:" + fansCount);
 			String[] info = line.split("\t");
 			long userID = Long.parseLong(info[0]);
-//			double fansPectg = fansRank / FANS_NUMBER;
-//			fansMap.put(userID, fansPectg);
-			long fansCoff = (long) (fansRank * INFU_NUMBER);
-			fansMap.put(userID, fansCoff);
-			fansRank++;
+			//long fansCoff = (long) (fansRank * INFU_NUMBER);
+			fansMap.put(userID, fansCount);
+			fansCount++;
 		}
+		brFans.close();
 		
-		FileOutputStream out = new FileOutputStream("C:/workspace/weiborank/Analysis");
+		FileOutputStream out = new FileOutputStream(outputFile);
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));
 		
 		line = "";
-		int infuRank = 1;
-		while ((line = brInfu.readLine()) != null) {
-			System.out.println("infu:" + infuRank);
+		long weiboRank = 1;
+		long maxDiff = -1;
+		long maxDiffLine = -1;
+		while ((line = brRank.readLine()) != null) {
+			System.out.println("rank:" + weiboRank);
 			String[] info = line.split("\t");
 			long userID = Long.parseLong(info[1]);
-//			double infuPectg = infuRank / INFU_NUMBER;
-//			double fansPectg = fansMap.get(userID);
-			
-//			bw.write(userID + "\t" + infuPectg + "\t" + fansPectg + "\t" + (infuPectg - fansPectg) * COFF + "\n");
-			
-			long infuCoff = (long) (infuRank * FANS_NUMBER);
-			long fansCoff = fansMap.get(userID);
-			bw.write(userID + "\t" + infuCoff + "\t" + fansCoff + "\t" + (infuCoff - fansCoff) + "\n");
-			
-			infuRank++;
+			long fCount = fansMap.get(userID);
+			long diff = (fCount - weiboRank);
+			if (Math.abs(diff) > maxDiff) {
+					maxDiff = diff;
+					maxDiffLine = weiboRank;
+			}
+			bw.write(userID + "\t" + diff + "\n");
+			weiboRank++;
 		}
-		
-		brFans.close();
-		brInfu.close();
+		System.out.println("Max Diff is: " + maxDiff + " at " + maxDiffLine);
+		brRank.close();
 		bw.close();
 	}
 	
@@ -92,7 +86,7 @@ public class RankAnalysis {
 	}
 	
 	public static void main(String[] args) throws IOException {
-//		RankAnalysis.analysis();
-		RankAnalysis.analysis2();
+		RankAnalysis.analysis(args[0], args[1], args[2]);
+//		RankAnalysis.analysis2();
 	}
 }

@@ -1,14 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package weiborank;
 
 import java.io.IOException;
 import java.util.Iterator;
 import org.apache.hadoop.fs.Path;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -49,7 +43,8 @@ public class WeiboRanklter extends Configured implements Tool {
     public static class Reduce extends Reducer<Text, Text, Text, Text> {
         
         private static final double d = 0.85;
-        private static final double minRank = (1 - d) / 1000000;
+//        private static final double minRank = (1 - d) / 1000000;
+        private static final double minRank = 1 - d;
         
         public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
             String value = "";

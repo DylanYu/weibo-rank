@@ -66,16 +66,23 @@ public class FansCounter extends Configured implements Tool {
 			CsvReader reader = new CsvReader(inputStream, Charset.forName("utf-8"));
 			reader.readRecord();
 			String user = reader.get(0);
-			String[] watchList = reader.get(24 - 4).split(",");
+			String watchList = reader.get(20);
 			try {
 				int userID = Integer.parseInt(user);
-				for (String watched: watchList) {
-					missile.set(watched);
-					output.collect(missile, ONE);
+				if (watchList.equals("")) {
+					// No watch list, just skip.
+					;
+				}
+				else {
+					String[] list = watchList.split(",");
+					for (String watched: list) {
+						missile.set(watched);
+						output.collect(missile, ONE);
+					}
 				}
 			}
 			catch (NumberFormatException ex) {
-				// Can't parse UserID, so it's the header, just skip.
+				// Unable to parse UserID, so it's the header, just skip.
 				;
 			}
 			
@@ -139,18 +146,12 @@ public class FansCounter extends Configured implements Tool {
 		conf.setOutputValueClass(IntWritable.class);
 
 		conf.setMapperClass(CounterMapper.class);
-//		conf.setCombinerClass(CounterReducer.class);
 		conf.setReducerClass(CounterReducer.class);
 
 		conf.setInputFormat(TextInputFormat.class);
-//		conf.setOutputFormat(TextOutputFormat.class);
 		conf.setOutputFormat(SequenceFileOutputFormat.class);
 
-		FileInputFormat.setInputPaths(conf,"/home/helo/weibo_data");
-//		FileInputFormat.setInputPaths(conf,"/home/helo/weibo_test");
-//		FileInputFormat.setInputPaths(conf,"C:/Yu/weibo_test");
-//		FileInputFormat.setInputPaths(conf,"C:/Yu/weibo_data");
-//		FileOutputFormat.setOutputPath(conf, new Path("counter"));
+		FileInputFormat.setInputPaths(conf,"weibo_data_merged");
 
 		Path tempDir = new Path("UserCount_temp"
 				+ Integer.toString(new Random().nextInt(Integer.MAX_VALUE)));
@@ -162,7 +163,6 @@ public class FansCounter extends Configured implements Tool {
 		JobConf sortJob = new JobConf(getConf(), FansCounter.class);
 		sortJob.setJobName("SORT_JOB");
 
-//		sortJob.setInputFormat(TextInputFormat.class);
 		sortJob.setInputFormat(SequenceFileInputFormat.class);
 		sortJob.setOutputFormat(TextOutputFormat.class);
 		sortJob.setOutputKeyClass(IntWritable.class);
@@ -174,7 +174,7 @@ public class FansCounter extends Configured implements Tool {
 		sortJob.setNumReduceTasks(1);
 		sortJob.setOutputKeyComparatorClass(IntWritableDecreasingComparator.class);
 		
-		Path resultPath = new Path("FansRank");
+		Path resultPath = new Path("FansCountOutput");
 		
 		FileInputFormat.setInputPaths(sortJob, tempDir);
 		FileOutputFormat.setOutputPath(sortJob, resultPath);
