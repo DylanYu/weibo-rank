@@ -57,7 +57,7 @@ public class RankAnalysis {
 					maxDiff = diff;
 					maxDiffLine = weiboRank;
 			}
-			bw.write(userID + "\t" + diff + "\n");
+			bw.write(userID + "\t" + weiboRank + "\t"  + fCount + "\t" + diff + "\n");
 			weiboRank++;
 		}
 		System.out.println("Max Diff is: " + maxDiff + " at " + maxDiffLine);
